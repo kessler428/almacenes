@@ -1,0 +1,44 @@
+
+.paginationBttns {
+    height: 0px;
+    position: relative;
+    top: 35px;
+    right: 15px;
+    list-style: none;
+    display: flex;
+    
+}
+  
+.paginationBttns a {
+    padding: 14px;
+    margin: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+  
+.paginationBttns a:hover {
+    background-color: #ffffff;
+}
+  
+.paginationActive a {
+    padding: 14px;
+    margin: 8px;
+    background-color: white;
+    color: #00050a;
+  }
+
+
+@media screen and (max-width: 500px){
+    .nextBttn{
+        display: none;
+    }
+
+    .previousBttn{
+        display: none;
+    }
+
+    .paginationBttns a {
+      margin: 6px;
+    }
+}
+  
