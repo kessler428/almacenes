@@ -28,6 +28,89 @@ import { AddProject } from "../views/project/add_project/AddProject";
 import { Project } from "../views/project/project/Project";
 
 function Router() {
+  // Configuración de las rutas dentro de /admin
+  const adminRoutesConfig = [
+    { path: "", component: <Inicio /> },
+    { path: "productos", component: <Inventory />, modulo: MODULOS.PRODUCTOS },
+    {
+      path: "productos/ver/:id",
+      component: <ViewInventory />,
+      modulo: MODULOS.PRODUCTOS
+    },
+    {
+      path: "productos/agregar/:id",
+      component: <AddInventory />,
+      modulo: MODULOS.PRODUCTOS
+    },
+    {
+      path: "productos/enviar",
+      component: <SendProducts />,
+      modulo: MODULOS.PRODUCTOS
+    },
+    {
+      path: "ubicacion-uno",
+      component: <LocationOne />,
+      modulo: MODULOS.PRODUCTOS
+    },
+    {
+      path: "ubicacion-uno/agregar/:id",
+      component: <AddLocationOne />,
+      modulo: MODULOS.PRODUCTOS
+    },
+    {
+      path: "ubicacion-dos",
+      component: <LocationTwo />,
+      modulo: MODULOS.PRODUCTOS
+    },
+    {
+      path: "ubicacion-dos/agregar/:id",
+      component: <AddLocationTwo />,
+      modulo: MODULOS.PRODUCTOS
+    },
+    { path: "codigos", component: <Codes />, modulo: MODULOS.PRODUCTOS },
+    {
+      path: "codigos/agregar/:id",
+      component: <AddCode />,
+      modulo: MODULOS.PRODUCTOS
+    },
+    { path: "serial", component: <Serial />, modulo: MODULOS.PRODUCTOS },
+    {
+      path: "serial/agregar/:id",
+      component: <AddSerial />,
+      modulo: MODULOS.PRODUCTOS
+    },
+    {
+      path: "unidad-de-medida",
+      component: <UnitMeasurements />,
+      modulo: MODULOS.PRODUCTOS
+    },
+    {
+      path: "unidad-de-medida/agregar/:id",
+      component: <AddUnitMeasurements />,
+      modulo: MODULOS.PRODUCTOS
+    },
+    { path: "proyecto", component: <Project />, modulo: MODULOS.PRODUCTOS },
+    {
+      path: "proyecto/agregar/:id",
+      component: <AddProject />,
+      modulo: MODULOS.PRODUCTOS
+    }
+  ];
+
+  // Mapeo de la configuración para generar los hijos de /admin
+  const adminRoutes = adminRoutesConfig.map((route, index) => {
+    const { path, component, modulo } = route;
+    return {
+      path,
+      element: (
+        <PrivateRoute key={index} {...(modulo ? { modulo } : {})}>
+          {component}
+        </PrivateRoute>
+      )
+    };
+  });
+
+  // Definición global de las rutas
   const routes = [
     { path: "/", element: <Login /> },
     {
@@ -37,197 +120,10 @@ function Router() {
           <SideMenu />
         </PrivateRoute>
       ),
-      children: [
-        {
-          path: "",
-          element: (
-            <PrivateRoute
-              key={10 + Math.random() * 1000}
-            >
-              <Inicio />
-            </PrivateRoute>
-          ),
-        },
-        {
-          path: "productos",
-          element: (
-            <PrivateRoute
-              modulo={MODULOS.PRODUCTOS}
-              key={10 + Math.random() * 1000}
-            >
-              <Inventory />
-            </PrivateRoute>
-          ),
-        },
-        {
-          path: "productos/ver/:id",
-          element: (
-            <PrivateRoute
-              modulo={MODULOS.PRODUCTOS}
-              key={10 + Math.random() * 1000}
-            >
-              <ViewInventory />
-            </PrivateRoute>
-          ),
-        },
-        {
-          path: "productos/agregar/:id",
-          element: (
-            <PrivateRoute
-              modulo={MODULOS.PRODUCTOS}
-              key={10 + Math.random() * 1000}
-            >
-              <AddInventory />
-            </PrivateRoute>
-          ),
-        },
-        {
-          path: "productos/enviar",
-          element: (
-            <PrivateRoute
-              modulo={MODULOS.PRODUCTOS}
-              key={10 + Math.random() * 1000}
-            >
-              <SendProducts />
-            </PrivateRoute>
-          ),
-        },
-        {
-          path: "ubicacion-uno",
-          element: (
-            <PrivateRoute
-              modulo={MODULOS.PRODUCTOS}
-              key={10 + Math.random() * 1000}
-            >
-              <LocationOne />
-            </PrivateRoute>
-          ),
-        },
-        {
-          path: "ubicacion-uno/agregar/:id",
-          element: (
-            <PrivateRoute
-              modulo={MODULOS.PRODUCTOS}
-              key={10 + Math.random() * 1000}
-            >
-              <AddLocationOne />
-            </PrivateRoute>
-          ),
-        },
-        {
-          path: "ubicacion-dos",
-          element: (
-            <PrivateRoute
-              modulo={MODULOS.PRODUCTOS}
-              key={10 + Math.random() * 1000}
-            >
-              <LocationTwo />
-            </PrivateRoute>
-          ),
-        },
-        {
-          path: "ubicacion-dos/agregar/:id",
-          element: (
-            <PrivateRoute
-              modulo={MODULOS.PRODUCTOS}
-              key={10 + Math.random() * 1000}
-            >
-              <AddLocationTwo />
-            </PrivateRoute>
-          ),
-        },
-        {
-          path: "codigos",
-          element: (
-            <PrivateRoute
-              modulo={MODULOS.PRODUCTOS}
-              key={10 + Math.random() * 1000}
-            >
-              <Codes />
-            </PrivateRoute>
-          ),
-        },
-        {
-          path: "codigos/agregar/:id",
-          element: (
-            <PrivateRoute
-              modulo={MODULOS.PRODUCTOS}
-              key={10 + Math.random() * 1000}
-            >
-              <AddCode />
-            </PrivateRoute>
-          ),
-        },
-        {
-          path: "serial",
-          element: (
-            <PrivateRoute
-              modulo={MODULOS.PRODUCTOS}
-              key={10 + Math.random() * 1000}
-            >
-              <Serial />
-            </PrivateRoute>
-          ),
-        },
-        {
-          path: "serial/agregar/:id",
-          element: (
-            <PrivateRoute
-              modulo={MODULOS.PRODUCTOS}
-              key={10 + Math.random() * 1000}
-            >
-              <AddSerial />
-            </PrivateRoute>
-          ),
-        },
-        {
-          path: "unidad-de-medida",
-          element: (
-            <PrivateRoute
-              modulo={MODULOS.PRODUCTOS}
-              key={10 + Math.random() * 1000}
-            >
-              <UnitMeasurements />
-            </PrivateRoute>
-          ),
-        },
-        {
-          path: "unidad-de-medida/agregar/:id",
-          element: (
-            <PrivateRoute
-              modulo={MODULOS.PRODUCTOS}
-              key={10 + Math.random() * 1000}
-            >
-              <AddUnitMeasurements />
-            </PrivateRoute>
-          ),
-        },
-        {
-          path: "proyecto",
-          element: (
-            <PrivateRoute
-              modulo={MODULOS.PRODUCTOS}
-              key={10 + Math.random() * 1000}
-            >
-              <Project />
-            </PrivateRoute>
-          ),
-        },
-        {
-          path: "proyecto/agregar/:id",
-          element: (
-            <PrivateRoute
-              modulo={MODULOS.PRODUCTOS}
-              key={10 + Math.random() * 1000}
-            >
-              <AddProject />
-            </PrivateRoute>
-          ),
-        },
-      ],
+      children: adminRoutes
     },
     { path: "/no-autorizado", element: <NoAutorizado /> },
-    { path: "*", element: <NoEncontrado /> },
+    { path: "*", element: <NoEncontrado /> }
   ];
 
   return useRoutes(routes);
