@@ -125,7 +125,7 @@ export const Table = () => {
   return (
     <>
       <Header
-        nombre="producto"
+        nombre="Productos"
         filtro={filtro}
         setFiltro={manejarFiltro}
         urlXlsx={`reports/inventory-excel${ respStore !== '' ? `?store=${respStore}` : '' }`}
