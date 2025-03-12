@@ -50,6 +50,7 @@ export const Table = () => {
   const [respStore, setRespStore] = useState(Access.store ? Access.store.id : '');
 
   const [providers, setProviders] = useState([]);
+  const [projects, setProjects] = useState([]);
 
   const [filtro, setFiltro] = useState("");
 
@@ -73,6 +74,22 @@ export const Table = () => {
 
     setLoading(false);
   };
+
+  useEffect(() => {
+    getProjects();
+  }, []);
+
+  const getProjects = async () => {
+    setLoading(true);
+    
+    const resp = await fetchConToken(`projects?page=0&size=1000`);
+    const body = await resp.json();
+
+    setProjects(body.catalogs);
+    
+    setLoading(false);
+  };
+
 
   useEffect(() => {
     getInventory({
@@ -112,6 +129,7 @@ export const Table = () => {
         unitMeasurement={item.unitMeasurement.value}
         loadProducts={loadProducts}
         setLoadProducts={setLoadProducts}
+        projects={projects}
       />
     );
   });

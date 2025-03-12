@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 
-import { RiDeleteBinLine, RiEyeLine, RiPencilLine } from "react-icons/ri";
+import { RiDeleteBinLine, RiPencilLine } from "react-icons/ri";
+import { AiOutlineSend } from "react-icons/ai";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { Modal } from "../../Modal";
 import Swal from "sweetalert2";
 import { ModalForm } from "../../ModalForm";
 import { Input } from "../../Input";
+import { Select2 } from "../../Select2";
 import { fetchConToken } from "../../../helpers/fetch";
 
 export const GridCells = ({
@@ -20,12 +22,15 @@ export const GridCells = ({
   stock,
   unitMeasurement,
   loadProducts,
-  setLoadProducts
+  setLoadProducts,
+  projects
 }) => {
   const navigate = useNavigate();
   const { Access } = useSelector((state) => state.auth);
-  const [modal, setModal] = useState(false);
   const [modalForm, setModalForm] = useState(false);
+
+  const [stockToSend, setStockToSend] = useState(0);
+  const [projectId, setProjectId] = useState(0);
 
   const goToSee = () => {
     if (Access.store !== null) return;
@@ -54,6 +59,25 @@ export const GridCells = ({
       }
     });
   };
+
+  const handleSend = async () => {
+    const resp = await fetchConToken(
+      `products/send-product-to-project`,
+      {
+        productId: id,
+        stock: Number(stockToSend),
+        projectId: Number(projectId),
+      },
+      "POST"
+    );
+    if (resp.status === 200) {
+      Swal.fire("Enviado", "El producto ha sido enviado", "success");
+      setLoadProducts(!loadProducts);
+      setModalForm(false);
+    } else {
+      Swal.fire("Error", "No se pudo enviar el producto", "error");
+    }
+  }
 
   return (
     <>
@@ -91,41 +115,27 @@ export const GridCells = ({
             </div>
           </div>
           <div className="flex flex-row gap-2 justify-center items-center">
+            <button
+              onClick={() => setModalForm(true)}
+              className="flex flex-row gap-1 items-center bg-principal text-white p-2 rounded-md"
+            >
+              <AiOutlineSend />
+            </button>
             <Link
               to={`agregar/${id}`}
-              className="flex flex-row gap-1 items-center"
+              className="flex flex-row gap-1 items-center bg-green-600 text-white p-2 rounded-md"
             >
               <RiPencilLine />
-              <span>Editar</span>
             </Link>
             <button
               onClick={handleDelete}
-              className="flex flex-row gap-1 text-danger items-center"
+              className="flex flex-row gap-1 items-center bg-danger text-white p-2 rounded-md"
             >
               <RiDeleteBinLine />
-              <span>Eliminar</span>
             </button>
           </div>
         </div>
       </div>
-      {modal && (
-        <Modal setModal={setModal}>
-          <div className="bg-white p-4">
-            <p className="my-4 text-xl">Producto: {name}</p>
-            <div className="flex flex-col md:flex-row pb-4 gap-6 justify-between">
-              {inventories.map((inventory) => (
-                <div
-                  key={inventory.id}
-                  className="flex flex-col w-full md:w-1/4 border-2 justify-center items-center p-4 rounded-md"
-                >
-                  <p className="font-semibold">{inventory.store.name}</p>
-                  <p>Cantidad: {inventory.stock}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Modal>
-      )}
       {modalForm && (
         <ModalForm>
           <div className="bg-white p-4">
@@ -139,15 +149,21 @@ export const GridCells = ({
               </button>
             </div>
             <Input
-              nameLabel="Agregar Stock"
+              nameLabel="Enviar una cantidad"
               type="number"
-              value={stock}
-              handleInputChange={(e) => setStock(e.target.value)}
+              value={stockToSend}
+              handleInputChange={(e) => setStockToSend(e.target.value)}
+            />
+            <Select2
+              nameLabel='Proyectos'
+              datos={projects}
+              value={projectId}
+              handleInputChange={(e) => setProjectId(e.target.value)}
             />
             <div className="mt-4 flex justify-end">
               <button
                 className="bg-blue-600 text-white p-2 rounded-md"
-                onClick={addStock}
+                onClick={handleSend}
               >
                 Agregar
               </button>
