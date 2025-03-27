@@ -10,6 +10,7 @@ export const Input = ({
   required,
   readOnly,
   onWheel,
+  disabled
 }) => {
   return (
     <div className="flex flex-col mt-4">
@@ -19,6 +20,7 @@ export const Input = ({
         type={type}
         value={value}
         name={name}
+        disabled={disabled}
         onChange={handleInputChange}
         className="rounded-md w-full"
         required={required}

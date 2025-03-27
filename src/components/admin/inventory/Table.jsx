@@ -11,180 +11,155 @@ import { TAMANIO_PAGINA_POR_DEFECTO } from "../../../utils/constants";
 import { GridItemsHeader } from "../../GridItemsHeader";
 import { useSelector } from "react-redux";
 
-const productsAdmin = [
+const PRODUCTS_ADMIN_HEADERS = [
   {
-    name: "Ubicación 1",
+    name: "Ubicación"
   },
   {
-    name: "Ubicación 2",
+    name: "Codigo"
   },
   {
-    name: "Nombre",
+    name: "Nombre"
   },
   {
-    name: "Precio Unit",
+    name: "Categoria"
   },
   {
-    name: "Serial",
+    name: "Unidad de medida"
   },
   {
-    name: "Stock",
+    name: "Stock"
   },
   {
-    name: "Status",
+    name: "Estado"
   },
   {
-    name: "Unidad de medida",
-  },
-  {
-    name: "Acciones",
-  },
+    name: "Acciones"
+  }
 ];
 
 export const Table = () => {
   const { Access } = useSelector((state) => state.auth);
-
   const [pageNumber, setPageNumber] = useState(0);
   const [pageSize, setPageSize] = useState(TAMANIO_PAGINA_POR_DEFECTO);
   const [loadProducts, setLoadProducts] = useState(false);
-  const [respStore, setRespStore] = useState(Access.store ? Access.store.id : '');
-
-  const [providers, setProviders] = useState([]);
+  const [respStore, setRespStore] = useState(Access.store?.id || "");
+  const [products, setProducts] = useState([]);
   const [projects, setProjects] = useState([]);
-
-  const [filtro, setFiltro] = useState("");
-
+  const [filter, setFilter] = useState("");
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({
     totalItems: 0,
     totalPages: 0,
-    currentPage: 0,
+    currentPage: 0
   });
 
-  const getInventory = async ({ pageNumber = 0, pageSize, paramFiltro }) => {
+  const fetchInventory = async () => {
     setLoading(true);
-
     const resp = await fetchConToken(
-      `products?page=${pageNumber}&size=${pageSize}&search=${paramFiltro}`
+      `products?page=${pageNumber}&size=${pageSize}&search=${filter}`
     );
     const body = await resp.json();
-
-    setProviders(body.data.rows);
+    setProducts(body.productsFilter);
     setPagination(body.paginationData);
+    setLoading(false);
+  };
 
+  const fetchProjects = async () => {
+    setLoading(true);
+    const resp = await fetchConToken("projects?pagination=false");
+    const body = await resp.json();
+    setProjects(body.data);
     setLoading(false);
   };
 
   useEffect(() => {
-    getProjects();
+    fetchProjects();
   }, []);
 
-  const getProjects = async () => {
-    setLoading(true);
-    
-    const resp = await fetchConToken(`projects?page=0&size=1000`);
-    const body = await resp.json();
-
-    setProjects(body.catalogs);
-    
-    setLoading(false);
-  };
-
-
   useEffect(() => {
-    getInventory({
-      pageNumber,
-      pageSize,
-      paramFiltro: filtro,
-    });
-  }, [pageNumber, pageSize, loadProducts, respStore]);
+    fetchInventory();
+  }, [pageNumber, pageSize, loadProducts, respStore, filter]);
 
-  const filterProducts = useCallback(
-    debounce((nuevoFiltro) => {
-      getInventory(nuevoFiltro);
+  const debouncedFilterProducts = useCallback(
+    debounce((newFilter) => {
+      setFilter(newFilter);
+      fetchInventory();
     }, 1000),
     []
   );
 
-  const manejarFiltro = (nuevoFiltro) => {
-    setFiltro(nuevoFiltro);
-    filterProducts({
-      paramFiltro: nuevoFiltro,
-      pageSize,
-    });
+  const handleFilterChange = (newFilter) => {
+    debouncedFilterProducts(newFilter);
   };
 
-  const displayStage = providers?.map((item) => {
-    return (
-      <GridCells
-        key={item.id}
-        id={item.id}
-        location1={item.location1.value}
-        location2={item.location2.value}
-        name={item.name}
-        priceUnit={item.priceUnit}
-        serial={item.location2.value}
-        status={item.status}
-        stock={item.stock}
-        unitMeasurement={item.unitMeasurement.value}
-        loadProducts={loadProducts}
-        setLoadProducts={setLoadProducts}
-        projects={projects}
-      />
-    );
-  });
+  const renderProviders = products.map(
+    (item) => (
+      console.log(item),
+      (
+        <GridCells
+          key={item.id}
+          id={item.id}
+          location1={item.location1}
+          code={item.code}
+          name={item.name}
+          serial={item.serial}
+          unitMeasurement={item.unitMeasurement}
+          stock={item.stock}
+          status={item.status}
+          loadProducts={loadProducts}
+          setLoadProducts={setLoadProducts}
+          projects={projects}
+        />
+      )
+    )
+  );
 
   const pageCount = Math.ceil(pagination.totalItems / pageSize);
-
-  const changePage = ({ selected }) => {
-    setPageNumber(selected);
-  };
 
   return (
     <>
       <Header
-        nombre="Productos"
-        filtro={filtro}
-        setFiltro={manejarFiltro}
-        urlXlsx={`reports/inventory-excel${ respStore !== '' ? `?store=${respStore}` : '' }`}
+        nombre="+ Crear productos"
+        filtro={filter}
+        setFiltro={handleFilterChange}
         pagination={pagination}
-        showButton={true}
-        showFilter={true}
+        showButton
+        showFilter
         totalAfiliados={pagination.totalItems}
         numeroDePagina={pageNumber}
         tamanioDePagina={pageSize}
         respStore={respStore}
+        urlXlsx={"reports"}
         setRespStore={setRespStore}
-        isInventory={true}
-        dailyReport={true}
+        isInventory
+        dailyReport
       />
       {loading ? (
         <SpinnerLoading />
       ) : (
         <div className="AppPaginationTeacher">
-          {providers.length > 0 ? (
+          {products.length > 0 ? (
             <>
               <div className="py-4 w-full">
                 <GridItemsHeader
-                  params={productsAdmin}
-                  styleTable="grid-cols-9"
+                  params={PRODUCTS_ADMIN_HEADERS}
+                  styleTable="grid-cols-8"
                 />
-                {displayStage}
+                {renderProviders}
               </div>
               <div className="hidden md:flex mb-1 flex-row justify-between">
                 <ReactPaginate
-                  previousLabel={"<"}
-                  nextLabel={">"}
+                  previousLabel="<"
+                  nextLabel=">"
                   initialPage={pageNumber}
-                  breakLabel={"..."}
-                  marginPagesDisplayed={3}
                   pageCount={pageCount}
-                  onPageChange={changePage}
-                  containerClassName={"paginationBttns"}
-                  previousLinkClassName={"previousBttn"}
-                  nextLinkClassName={"nextBttn"}
-                  disabledClassName={"paginationDisabled"}
-                  activeClassName={"paginationActive"}
+                  onPageChange={({ selected }) => setPageNumber(selected)}
+                  containerClassName="paginationBttns"
+                  previousLinkClassName="previousBttn"
+                  nextLinkClassName="nextBttn"
+                  disabledClassName="paginationDisabled"
+                  activeClassName="paginationActive"
                 />
                 <GridFooter pageSize={pageSize} setPageSize={setPageSize} />
               </div>

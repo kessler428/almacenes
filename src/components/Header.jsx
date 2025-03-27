@@ -19,27 +19,23 @@ export const Header = ({
   respStore,
   setRespStore,
   isInventory,
-  dailyReport,
+  dailyReport
 }) => {
   const { Access } = useSelector((state) => state.auth);
 
-  // Create functionn to download file async
+  // Función para descargar el archivo Excel
   const downloadFile = async () => {
-    if (urlXlsx === "" || urlXlsx === null || urlXlsx === undefined) return;
+    if (!urlXlsx) return;
 
     const response = await fetchConToken(urlXlsx);
     const blob = await response.blob();
-    // 2. Create blob link to download
     const url = window.URL.createObjectURL(new Blob([blob]));
     const link = document.createElement("a");
     link.href = url;
     link.setAttribute("download", `Productos.xlsx`);
-    // 3. Append to html page
     document.body.appendChild(link);
-    // 4. Force download
     link.click();
-    // 5. Clean up and remove the link
-    link.parentNode.removeChild(link);
+    document.body.removeChild(link);
   };
 
   return (
@@ -54,18 +50,12 @@ export const Header = ({
             to="agregar/nuevo"
             className="bg-secundario px-4 py-2 rounded-md text-white font-medium"
           >
-            <p className="w-36 text-center">
-              {nombre}
-            </p>
+            <p className="w-36 text-center">{nombre}</p>
           </Link>
         )}
       </div>
       {totalAfiliados > 0 && (
-        <div
-          className={
-            "text-center md:text-right"
-          }
-        >
+        <div className="text-center md:text-right">
           <p className="font-bold mt-4 md:mt-0">
             Mostrando {numeroDePagina + 1} de{" "}
             {tamanioDePagina > totalAfiliados
@@ -75,9 +65,7 @@ export const Header = ({
           </p>
         </div>
       )}
-      <div
-        className={`flex flex-col md:flex-row gap-4`}
-      >
+      <div className="flex flex-col md:flex-row gap-4 items-center">
         {Access.store === null && showFilter && (
           <Filtros
             respStore={respStore}
@@ -86,6 +74,17 @@ export const Header = ({
           />
         )}
         <GridSearchBar filtro={filtro} setFiltro={setFiltro} />
+
+        {/* Botón de descarga de Excel */}
+        {urlXlsx && (
+          <button
+            onClick={downloadFile}
+            className="flex flex-row gap-2 items-center bg-green-600 text-white px-4 py-2 rounded-md"
+          >
+            <RiFileExcel2Fill size={20} />
+            Descargar Excel
+          </button>
+        )}
       </div>
     </div>
   );

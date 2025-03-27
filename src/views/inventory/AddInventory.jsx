@@ -4,24 +4,21 @@ import { FormInventory } from "../../components/admin/add-inventory/FormInventor
 import { Title } from "../../components/Title";
 
 export const AddInventory = () => {
-
   const { id } = useParams();
 
   const [esNuevo, setEsNuevo] = useState(false);
 
   useEffect(() => {
-    if(id === "nuevo") {
+    if (id === "nuevo") {
       setEsNuevo(true);
     } else {
       setEsNuevo(false);
     }
-  }, [id])
+  }, [id]);
 
   return (
     <>
-      <Title
-        title={esNuevo ? "Agregar Producto" : "Editar Producto"}
-      />
+      <Title title={esNuevo ? "Agregar Producto" : "Editar Producto"} />
       <FormInventory id={id} esNuevo={esNuevo} />
     </>
   );

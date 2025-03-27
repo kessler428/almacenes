@@ -16,8 +16,7 @@ import {
 } from "../views/inventory";
 import { LocationOne } from "../views/location_one/show_locations/LocationOne";
 import { AddLocationOne } from "../views/location_one/add_location/AddLocationOne";
-import { AddLocationTwo } from "../views/location_two/add_location/AddLocationTwo";
-import { LocationTwo } from "../views/location_two/show_locations/LocationTwo";
+import { AddLocationTwo } from "../views/history/add_location/AddLocationTwo";
 import { AddCode } from "../views/codes/add_code/AddCode";
 import { Codes } from "../views/codes/codes/Codes";
 import { Serial } from "../views/serials/serial/Serial";
@@ -26,6 +25,7 @@ import { UnitMeasurements } from "../views/unit-measurements/unit_measurements/U
 import { AddUnitMeasurements } from "../views/unit-measurements/add_unit_measurements/AddUnitMeasurements";
 import { AddProject } from "../views/project/add_project/AddProject";
 import { Project } from "../views/project/project/Project";
+import { History } from "../views/history/table/History";
 
 function Router() {
   // Configuración de las rutas dentro de /admin
@@ -55,11 +55,6 @@ function Router() {
     {
       path: "ubicacion-uno/agregar/:id",
       component: <AddLocationOne />,
-      modulo: MODULOS.PRODUCTOS
-    },
-    {
-      path: "ubicacion-dos",
-      component: <LocationTwo />,
       modulo: MODULOS.PRODUCTOS
     },
     {
@@ -94,6 +89,10 @@ function Router() {
       path: "proyecto/agregar/:id",
       component: <AddProject />,
       modulo: MODULOS.PRODUCTOS
+    },
+    {
+      path: "historial",
+      component: <History />
     }
   ];
 

@@ -1,11 +1,11 @@
 import { Title } from "../../../components/Title";
 import { Table } from "./components/Table";
 
-export const UnitMeasurements = () => {
+export const History = () => {
   return (
-    <>
-      <Title title="Unidad de medidas" />
+    <div>
+      <Title title="Historial de eventos" />
       <Table />
-    </>
+    </div>
   );
 };

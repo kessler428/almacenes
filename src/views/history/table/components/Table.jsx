@@ -3,7 +3,7 @@ import ReactPaginate from "react-paginate";
 
 import { GridCells } from "./GridCells";
 
-import '../../../../components/stylePaginate.css'
+import "../../../../components/stylePaginate.css";
 import { fetchConToken } from "../../../../helpers/fetch";
 import { debounce } from "../../../../utils/functions";
 import { SpinnerLoading } from "../../../../components/SpinnerLoading";
@@ -14,25 +14,27 @@ import { GridItemsHeader } from "../../../../components/GridItemsHeader";
 
 const paramsOfTable = [
   {
-    name: "Identificador",
+    name: "Identificador"
   },
   {
-    name: "Ubicación",
+    name: "Project de envio"
   },
   {
-    name: "Estado",
+    name: "Producto"
   },
   {
-    name: "Acciones",
+    name: "Stock enviado"
   },
-]
+  {
+    name: "Fecha de envio"
+  }
+];
 
 export const Table = () => {
-
   const [pageNumber, setPageNumber] = useState(0);
   const [pageSize, setPageSize] = useState(TAMANIO_PAGINA_POR_DEFECTO);
 
-  const [providers, setProviders] = useState([]);
+  const [historyProductSend, setHistoryProductSend] = useState([]);
   const [getClient, setGetClient] = useState(false);
 
   const [filtro, setFiltro] = useState("");
@@ -41,22 +43,20 @@ export const Table = () => {
   const [pagination, setPagination] = useState({
     totalItems: 0,
     totalPages: 0,
-    currentPage: 0,
+    currentPage: 0
   });
 
-  const getClients = async ({
-    pageNumber = 0,
-    pageSize,
-    paramFiltro,
-  }) => {
+  const getClients = async ({ pageNumber = 0, pageSize, paramFiltro }) => {
     setLoading(true);
-    
-    const resp = await fetchConToken(`locations2?page=${pageNumber}&size=${pageSize}&search=${paramFiltro}`);
+
+    const resp = await fetchConToken(
+      `products/send-history?page=${pageNumber}&size=${pageSize}&search=${paramFiltro}`
+    );
     const body = await resp.json();
 
-    setProviders(body.catalogs);
+    setHistoryProductSend(body.sendHistoryFilter);
     setPagination(body.paginationData);
-    
+
     setLoading(false);
   };
 
@@ -64,29 +64,34 @@ export const Table = () => {
     getClients({
       pageNumber,
       pageSize,
-      paramFiltro: filtro,
+      paramFiltro: filtro
     });
   }, [pageNumber, pageSize, getClient]);
 
-  const filtrarAfiliados = useCallback(debounce((nuevoFiltro) => {
-    getClients(nuevoFiltro);
-  }, 1000), []);
+  const filtrarAfiliados = useCallback(
+    debounce((nuevoFiltro) => {
+      getClients(nuevoFiltro);
+    }, 1000),
+    []
+  );
 
   const manejarFiltro = (nuevoFiltro) => {
     setFiltro(nuevoFiltro);
     filtrarAfiliados({
       paramFiltro: nuevoFiltro,
-      pageSize,
+      pageSize
     });
   };
 
-  const displayStage = providers?.map((item) => {
+  const displayStage = historyProductSend?.map((item) => {
     return (
       <GridCells
         key={item.id}
         id={item.id}
-        name={item.value}
-        status={item.status}
+        project={item.project}
+        product={item.product}
+        stock={item.stock}
+        createdAt={item.createdAt}
         getClient={getClient}
         setGetClient={setGetClient}
       />
@@ -106,7 +111,7 @@ export const Table = () => {
         filtro={filtro}
         setFiltro={manejarFiltro}
         pagination={pagination}
-        showButton={true}
+        showButton={false}
         showFilter={false}
         totalAfiliados={pagination.totalItems}
         numeroDePagina={pageNumber}
@@ -115,11 +120,14 @@ export const Table = () => {
       {loading ? (
         <SpinnerLoading />
       ) : (
-        <div className="AppPaginationTeacher mt-8">
-          {providers.length > 0 ? (
+        <div className="AppPaginationTeacher mt-5">
+          {historyProductSend.length > 0 ? (
             <>
               <div className="py-4 w-full">
-                <GridItemsHeader params={paramsOfTable} styleTable='grid-cols-4' />
+                <GridItemsHeader
+                  params={paramsOfTable}
+                  styleTable="grid-cols-5"
+                />
                 {displayStage}
               </div>
               <div className="mb-1 hidden md:flex flex-row justify-between">

@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 
 import { RiDeleteBinLine, RiPencilLine } from "react-icons/ri";
-import { AiOutlineSend } from "react-icons/ai";
+import {
+  AiOutlineSend,
+  AiOutlineExport,
+  AiOutlineImport,
+  AiOutlineDownload
+} from "react-icons/ai";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { Modal } from "../../Modal";
@@ -14,16 +19,15 @@ import { fetchConToken } from "../../../helpers/fetch";
 export const GridCells = ({
   id,
   location1,
-  location2,
+  code,
   name,
-  priceUnit,
   serial,
-  status,
-  stock,
   unitMeasurement,
+  stock,
+  status,
+  projects,
   loadProducts,
-  setLoadProducts,
-  projects
+  setLoadProducts
 }) => {
   const navigate = useNavigate();
   const { Access } = useSelector((state) => state.auth);
@@ -31,11 +35,7 @@ export const GridCells = ({
 
   const [stockToSend, setStockToSend] = useState(0);
   const [projectId, setProjectId] = useState(0);
-
-  const goToSee = () => {
-    if (Access.store !== null) return;
-    navigate(`ver/${id}`);
-  };
+  const [stockToAdd, setStockToAdd] = useState(false);
 
   const handleDelete = () => {
     Swal.fire({
@@ -49,7 +49,7 @@ export const GridCells = ({
       cancelButtonText: "Cancelar"
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const resp = await fetchConToken(`products/${id}`, {}, "PATCH");
+        const resp = await fetchConToken(`products/${id}`, {}, "DELETE");
         if (resp.status === 200) {
           Swal.fire("Eliminado", "El producto ha sido eliminado", "success");
           setLoadProducts(!loadProducts);
@@ -66,7 +66,7 @@ export const GridCells = ({
       {
         productId: id,
         stock: Number(stockToSend),
-        projectId: Number(projectId),
+        projectId: Number(projectId)
       },
       "POST"
     );
@@ -77,40 +77,57 @@ export const GridCells = ({
     } else {
       Swal.fire("Error", "No se pudo enviar el producto", "error");
     }
-  }
+  };
+
+  const handleAddStock = async () => {
+    const resp = await fetchConToken(
+      `products/${id}`,
+      {
+        productId: id,
+        stock: Number(stockToAdd)
+      },
+      "PATCH"
+    );
+    if (resp.status === 200) {
+      Swal.fire("Éxito", "Stock agregado correctamente", "success");
+      setLoadProducts(!loadProducts);
+      setStockToAdd(false);
+    } else {
+      Swal.fire("Error", "No se pudo agregar el stock", "error");
+    }
+  };
 
   return (
     <>
       <div
-        key={id * Math.random()}
+        key={id}
         className={`hidden md:flex rounded-lg w-full py-3 pr-2 my-2 bg-white`}
       >
-        <div className={`grid w-full pl-2 grid-cols-9`}>
-          <div onClick={goToSee} className="col-span-8 cursor-pointer">
-            <div className="grid grid-cols-8">
+        <div className={`grid w-full pl-2 grid-cols-8`}>
+          <div className="col-span-7 cursor-pointer">
+            <div className="grid grid-cols-7">
               <div className="grid justify-center items-center">
                 <p className="text-center truncate">{location1}</p>
               </div>
               <div className="grid justify-center items-center">
-                <p className="text-center truncate">{location2}</p>
+                <p className="text-center truncate">{code}</p>
               </div>
               <div className="grid justify-center items-center">
                 <p className="text-center truncate">{name}</p>
               </div>
               <div className="grid justify-center items-center">
-                <p className="text-center truncate">{priceUnit}</p>
+                <p className="text-center truncate">{serial}</p>
               </div>
               <div className="grid justify-center items-center">
-                <p className="text-center truncate">{serial}</p>
+                <p className="text-center truncate">{unitMeasurement}</p>
               </div>
               <div className="grid justify-center items-center">
                 <p className="text-center truncate">{stock}</p>
               </div>
               <div className="grid justify-center items-center">
-                <p className="text-center truncate">{status}</p>
-              </div>
-              <div className="grid justify-center items-center">
-                <p className="text-center truncate">{unitMeasurement}</p>
+                <p className="text-center truncate">
+                  {status === "active" ? "Activo" : "Inactivo"}
+                </p>
               </div>
             </div>
           </div>
@@ -119,7 +136,7 @@ export const GridCells = ({
               onClick={() => setModalForm(true)}
               className="flex flex-row gap-1 items-center bg-principal text-white p-2 rounded-md"
             >
-              <AiOutlineSend />
+              <AiOutlineExport size={15} />
             </button>
             <Link
               to={`agregar/${id}`}
@@ -133,37 +150,94 @@ export const GridCells = ({
             >
               <RiDeleteBinLine />
             </button>
+            <button
+              onClick={() => setStockToAdd(true)}
+              className="flex flex-row gap-1 items-center bg-principal text-white p-2 rounded-md"
+            >
+              <AiOutlineDownload size={15} />
+            </button>
           </div>
         </div>
       </div>
       {modalForm && (
-        <ModalForm>
-          <div className="bg-white p-4">
-            <div className="flex flex-row justify-between">
-              <p className="my-4 md:text-xl">Producto: {name}</p>
-              <button
-                onClick={() => setModalForm(false)}
-                className=" text-red-600 text-xl font-bold"
-              >
-                X
-              </button>
+        <div className="bg-white p-6 w-full max-w-md">
+          <ModalForm>
+            <div className="bg-white p-6 w-full max-w-md">
+              {/* Header */}
+              <div className="flex items-center justify-between border-b pb-3">
+                <h2 className="text-xl font-semibold text-gray-800">
+                  Gestión de Producto
+                </h2>
+              </div>
+
+              {/* Form Fields */}
+              <div className="mt-4 space-y-4">
+                <p className="text-gray-700 font-medium">Producto: {name}</p>
+                <Input
+                  nameLabel="Salida de producto"
+                  type="number"
+                  value={stockToSend}
+                  handleInputChange={(e) => setStockToSend(e.target.value)}
+                />
+                <Select2
+                  nameLabel="Proyectos"
+                  datos={projects}
+                  value={projectId}
+                  handleInputChange={(e) => setProjectId(e.target.value)}
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="mt-6 flex justify-end space-x-3">
+                <button
+                  className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium py-2 px-4 rounded-lg transition"
+                  onClick={() => setModalForm(false)}
+                >
+                  Cancelar
+                </button>
+                <button
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition"
+                  onClick={handleSend}
+                >
+                  Agregar
+                </button>
+              </div>
             </div>
-            <Input
-              nameLabel="Enviar una cantidad"
-              type="number"
-              value={stockToSend}
-              handleInputChange={(e) => setStockToSend(e.target.value)}
-            />
-            <Select2
-              nameLabel='Proyectos'
-              datos={projects}
-              value={projectId}
-              handleInputChange={(e) => setProjectId(e.target.value)}
-            />
-            <div className="mt-4 flex justify-end">
+          </ModalForm>
+        </div>
+      )}
+      {stockToAdd && (
+        <ModalForm>
+          <div className="bg-white p-6 w-full max-w-md">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b pb-3">
+              <h2 className="text-xl font-semibold text-gray-800">
+                Gestión de Producto
+              </h2>
+            </div>
+
+            {/* Form Fields */}
+            <div className="mt-4 space-y-4">
+              <p className="text-gray-700 font-medium">Producto: {name}</p>
+              <Input
+                nameLabel="Agregar stock"
+                type="number"
+                value={stockToAdd}
+                handleInputChange={(e) => setStockToAdd(e.target.value)}
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="mt-6 flex justify-end space-x-3">
               <button
-                className="bg-blue-600 text-white p-2 rounded-md"
-                onClick={handleSend}
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium py-2 px-4 rounded-lg transition"
+                onClick={() => setStockToAdd(false)}
+              >
+                Cancelar
+              </button>
+              <button
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition"
+                onClick={handleAddStock}
               >
                 Agregar
               </button>

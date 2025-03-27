@@ -6,13 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { fetchConToken } from "../../../../helpers/fetch";
 
-export const GridCells = ({
-  id,
-  name,
-  status,
-  getClient,
-  setGetClient,
-}) => {
+export const GridCells = ({ id, name, status, getClient, setGetClient }) => {
   const navigate = useNavigate();
 
   const handleDelete = () => {
@@ -24,7 +18,7 @@ export const GridCells = ({
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar",
+      cancelButtonText: "Cancelar"
     }).then(async (result) => {
       if (result.isConfirmed) {
         const resp = await fetchConToken(`serials/${id}`, {}, "PATCH");
@@ -36,7 +30,7 @@ export const GridCells = ({
           );
           setGetClient(!getClient);
         } else {
-          Swal.fire("Error", "No se pudo eliminar la ubicación", "error");
+          Swal.fire("Error", "No se pudo eliminar la categoria", "error");
         }
       }
     });
@@ -61,8 +55,12 @@ export const GridCells = ({
                 <p className="text-center">{name}</p>
               </div>
               <div className="grid justify-center items-center">
-                <p className={`${status === 0 ? 'text-red-600' : 'text-green-600'}`}>
-                  {status === 1 ? 'Activo' : 'Inactivo'}
+                <p
+                  className={`${
+                    status === 0 ? "text-red-600" : "text-green-600"
+                  }`}
+                >
+                  {status === 1 ? "Activo" : "Inactivo"}
                 </p>
               </div>
             </div>
@@ -79,11 +77,17 @@ export const GridCells = ({
               className="flex flex-row gap-1 text-danger items-center"
               onClick={handleDelete}
             >
-              <RiDeleteBinLine className={`${status === 1 ? 'text-red-600' : 'text-green-600'}`} />
-              <span className={`${status === 1 ? 'text-red-600' : 'text-green-600'}`}>
-                {
-                  status === 1 ? 'Desactivar' : 'Activar'
-                }
+              <RiDeleteBinLine
+                className={`${
+                  status === 1 ? "text-red-600" : "text-green-600"
+                }`}
+              />
+              <span
+                className={`${
+                  status === 1 ? "text-red-600" : "text-green-600"
+                }`}
+              >
+                {status === 1 ? "Desactivar" : "Activar"}
               </span>
             </button>
           </div>
@@ -106,31 +110,31 @@ export const GridCells = ({
           <p className="text-center">{status}</p>
         </div>
         <div className="flex flex-row justify-between gap-4">
-            <p>Acciones:</p>
-            <div className="flex flex-row gap-2 justify-center items-center">
-              <button
-                onClick={() => navigate(`ver/${id}`)}
-                className="flex flex-row gap-1 items-center text-blue-600"
-              >
-                <RiEyeFill />
-                Ver
-              </button>
-              <Link
-                to={`agregar/${id}`}
-                className="flex flex-row gap-1 items-center"
-              >
-                <RiPencilLine />
-                <span>Editar</span>
-              </Link>
-              <button
-                className="flex flex-row gap-1 text-danger items-center"
-                onClick={handleDelete}
-              >
-                <RiDeleteBinLine />
-                <span>Eliminar</span>
-              </button>
-            </div>
+          <p>Acciones:</p>
+          <div className="flex flex-row gap-2 justify-center items-center">
+            <button
+              onClick={() => navigate(`ver/${id}`)}
+              className="flex flex-row gap-1 items-center text-blue-600"
+            >
+              <RiEyeFill />
+              Ver
+            </button>
+            <Link
+              to={`agregar/${id}`}
+              className="flex flex-row gap-1 items-center"
+            >
+              <RiPencilLine />
+              <span>Editar</span>
+            </Link>
+            <button
+              className="flex flex-row gap-1 text-danger items-center"
+              onClick={handleDelete}
+            >
+              <RiDeleteBinLine />
+              <span>Eliminar</span>
+            </button>
           </div>
+        </div>
       </div>
     </>
   );

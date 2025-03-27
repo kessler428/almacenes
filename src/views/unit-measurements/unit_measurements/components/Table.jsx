@@ -3,7 +3,7 @@ import ReactPaginate from "react-paginate";
 
 import { GridCells } from "./GridCells";
 
-import '../../../../components/stylePaginate.css'
+import "../../../../components/stylePaginate.css";
 import { fetchConToken } from "../../../../helpers/fetch";
 import { debounce } from "../../../../utils/functions";
 import { SpinnerLoading } from "../../../../components/SpinnerLoading";
@@ -14,21 +14,20 @@ import { GridItemsHeader } from "../../../../components/GridItemsHeader";
 
 const paramsOfTable = [
   {
-    name: "Identificador",
+    name: "Identificador"
   },
   {
-    name: "Ubicación",
+    name: "Ubicación"
   },
   {
-    name: "Estado",
+    name: "Estado"
   },
   {
-    name: "Acciones",
-  },
-]
+    name: "Acciones"
+  }
+];
 
 export const Table = () => {
-
   const [pageNumber, setPageNumber] = useState(0);
   const [pageSize, setPageSize] = useState(TAMANIO_PAGINA_POR_DEFECTO);
 
@@ -41,22 +40,20 @@ export const Table = () => {
   const [pagination, setPagination] = useState({
     totalItems: 0,
     totalPages: 0,
-    currentPage: 0,
+    currentPage: 0
   });
 
-  const getClients = async ({
-    pageNumber = 0,
-    pageSize,
-    paramFiltro,
-  }) => {
+  const getClients = async ({ pageNumber = 0, pageSize, paramFiltro }) => {
     setLoading(true);
-    
-    const resp = await fetchConToken(`unit-measurements?page=${pageNumber}&size=${pageSize}&search=${paramFiltro}`);
+
+    const resp = await fetchConToken(
+      `unit-measurements?page=${pageNumber}&size=${pageSize}&search=${paramFiltro}`
+    );
     const body = await resp.json();
 
     setProviders(body.catalogs);
     setPagination(body.paginationData);
-    
+
     setLoading(false);
   };
 
@@ -64,19 +61,22 @@ export const Table = () => {
     getClients({
       pageNumber,
       pageSize,
-      paramFiltro: filtro,
+      paramFiltro: filtro
     });
   }, [pageNumber, pageSize, getClient]);
 
-  const filtrarAfiliados = useCallback(debounce((nuevoFiltro) => {
-    getClients(nuevoFiltro);
-  }, 1000), []);
+  const filtrarAfiliados = useCallback(
+    debounce((nuevoFiltro) => {
+      getClients(nuevoFiltro);
+    }, 1000),
+    []
+  );
 
   const manejarFiltro = (nuevoFiltro) => {
     setFiltro(nuevoFiltro);
     filtrarAfiliados({
       paramFiltro: nuevoFiltro,
-      pageSize,
+      pageSize
     });
   };
 
@@ -119,7 +119,10 @@ export const Table = () => {
           {providers.length > 0 ? (
             <>
               <div className="py-4 w-full">
-                <GridItemsHeader params={paramsOfTable} styleTable='grid-cols-4' />
+                <GridItemsHeader
+                  params={paramsOfTable}
+                  styleTable="grid-cols-4"
+                />
                 {displayStage}
               </div>
               <div className="mb-1 hidden md:flex flex-row justify-between">
