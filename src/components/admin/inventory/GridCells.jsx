@@ -7,6 +7,7 @@ import {
   AiOutlineImport,
   AiOutlineDownload
 } from "react-icons/ai";
+import * as Tooltip from "@radix-ui/react-tooltip";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { Modal } from "../../Modal";
@@ -132,30 +133,87 @@ export const GridCells = ({
             </div>
           </div>
           <div className="flex flex-row gap-2 justify-center items-center">
-            <button
-              onClick={() => setModalForm(true)}
-              className="flex flex-row gap-1 items-center bg-principal text-white p-2 rounded-md"
-            >
-              <AiOutlineExport size={15} />
-            </button>
-            <Link
-              to={`agregar/${id}`}
-              className="flex flex-row gap-1 items-center bg-green-600 text-white p-2 rounded-md"
-            >
-              <RiPencilLine />
-            </Link>
-            <button
-              onClick={handleDelete}
-              className="flex flex-row gap-1 items-center bg-danger text-white p-2 rounded-md"
-            >
-              <RiDeleteBinLine />
-            </button>
-            <button
-              onClick={() => setStockToAdd(true)}
-              className="flex flex-row gap-1 items-center bg-principal text-white p-2 rounded-md"
-            >
-              <AiOutlineDownload size={15} />
-            </button>
+            <Tooltip.Provider>
+              {/* Botón de Exportar */}
+              <Tooltip.Root>
+                <Tooltip.Trigger asChild>
+                  <button
+                    onClick={() => setModalForm(true)}
+                    className="flex flex-row gap-1 items-center bg-principal text-white p-2 rounded-md"
+                  >
+                    <AiOutlineExport size={15} />
+                  </button>
+                </Tooltip.Trigger>
+                <Tooltip.Portal>
+                  <Tooltip.Content
+                    side="top"
+                    className="bg-black text-white px-2 py-1 text-xs rounded-md"
+                  >
+                    Salidas de productos
+                  </Tooltip.Content>
+                </Tooltip.Portal>
+              </Tooltip.Root>
+
+              {/* Botón de Editar */}
+              <Tooltip.Root>
+                <Tooltip.Trigger asChild>
+                  <Link
+                    to={`agregar/${id}`}
+                    className="flex flex-row gap-1 items-center bg-green-600 text-white p-2 rounded-md"
+                  >
+                    <RiPencilLine />
+                  </Link>
+                </Tooltip.Trigger>
+                <Tooltip.Portal>
+                  <Tooltip.Content
+                    side="top"
+                    className="bg-black text-white px-2 py-1 text-xs rounded-md"
+                  >
+                    Editar producto
+                  </Tooltip.Content>
+                </Tooltip.Portal>
+              </Tooltip.Root>
+
+              {/* Botón de Eliminar */}
+              <Tooltip.Root>
+                <Tooltip.Trigger asChild>
+                  <button
+                    onClick={handleDelete}
+                    className="flex flex-row gap-1 items-center bg-danger text-white p-2 rounded-md"
+                  >
+                    <RiDeleteBinLine />
+                  </button>
+                </Tooltip.Trigger>
+                <Tooltip.Portal>
+                  <Tooltip.Content
+                    side="top"
+                    className="bg-black text-white px-2 py-1 text-xs rounded-md"
+                  >
+                    Eliminar producto
+                  </Tooltip.Content>
+                </Tooltip.Portal>
+              </Tooltip.Root>
+
+              {/* Botón de Añadir Stock */}
+              <Tooltip.Root>
+                <Tooltip.Trigger asChild>
+                  <button
+                    onClick={() => setStockToAdd(true)}
+                    className="flex flex-row gap-1 items-center bg-principal text-white p-2 rounded-md"
+                  >
+                    <AiOutlineDownload size={15} />
+                  </button>
+                </Tooltip.Trigger>
+                <Tooltip.Portal>
+                  <Tooltip.Content
+                    side="top"
+                    className="bg-black text-white px-2 py-1 text-xs rounded-md"
+                  >
+                    Añadir stock
+                  </Tooltip.Content>
+                </Tooltip.Portal>
+              </Tooltip.Root>
+            </Tooltip.Provider>
           </div>
         </div>
       </div>

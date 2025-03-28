@@ -4,7 +4,7 @@ import { Table } from "./components/Table";
 export const History = () => {
   return (
     <div>
-      <Title title="Historial de eventos" />
+      <Title title="Historial de envios" />
       <Table />
     </div>
   );
