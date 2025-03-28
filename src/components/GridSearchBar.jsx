@@ -10,7 +10,7 @@ export const GridSearchBar = ({ filtro, setFiltro }) => {
             setFiltro(e.target.value);
           }}
           className="border-none outline-none w-[140px] rounded-lg focus:ring-0 focus:ring-offset-0"
-          placeholder="Buscar..."
+          placeholder="Nombre..."
           type="text"
         />
         {filtro && (

@@ -26,6 +26,7 @@ import { AddUnitMeasurements } from "../views/unit-measurements/add_unit_measure
 import { AddProject } from "../views/project/add_project/AddProject";
 import { Project } from "../views/project/project/Project";
 import { History } from "../views/history/table/History";
+import { HistoryStock } from "../views/history-stock/table/HistoryStock";
 
 function Router() {
   // Configuración de las rutas dentro de /admin
@@ -93,6 +94,10 @@ function Router() {
     {
       path: "historial",
       component: <History />
+    },
+    {
+      path: "stock",
+      component: <HistoryStock />
     }
   ];
 

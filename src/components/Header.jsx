@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Filtros } from "./Filtros";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { GridSearchBar } from "./GridSearchBar";
 import { RiFileExcel2Fill, RiBook3Line } from "react-icons/ri";
 import { fetchConToken } from "../helpers/fetch";
+import { ImportExcelModal } from "./ImportExcelModal";
 
 export const Header = ({
   totalAfiliados,
@@ -18,10 +19,12 @@ export const Header = ({
   urlXlsx,
   respStore,
   setRespStore,
-  isInventory,
-  dailyReport
+  importXlsx
 }) => {
   const { Access } = useSelector((state) => state.auth);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [file, setFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   // Función para descargar el archivo Excel
   const downloadFile = async () => {
@@ -36,6 +39,33 @@ export const Header = ({
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  // Función para manejar la carga del archivo
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  // Función para importar el archivo
+  const handleImport = async () => {
+    if (!file) return alert("Selecciona un archivo para importar.");
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      setUploading(true);
+      const response = await fetchConToken(importXlsx, formData, "POST");
+      const result = await response.json();
+      alert(result.message || "Importación exitosa.");
+      setModalOpen(false);
+      setFile(null);
+    } catch (error) {
+      console.error("Error al importar:", error);
+      alert("Error en la importación.");
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -85,7 +115,30 @@ export const Header = ({
             Descargar Excel
           </button>
         )}
+
+        {/* Botón para abrir el modal de importación */}
+        {importXlsx && (
+          <button
+            onClick={() => setModalOpen(true)}
+            className="flex flex-row gap-2 items-center bg-blue-600 text-white px-4 py-2 rounded-md"
+          >
+            <RiBook3Line size={20} />
+            Importar Excel
+          </button>
+        )}
       </div>
+
+      {/* Modal para importar productos */}
+      {modalOpen && (
+        <>
+          <ImportExcelModal
+            onClose={() => setModalOpen(false)}
+            onImport={handleImport}
+            onFileChange={handleFileChange}
+            uploading={uploading}
+          />
+        </>
+      )}
     </div>
   );
 };

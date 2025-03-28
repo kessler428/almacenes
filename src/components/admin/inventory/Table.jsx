@@ -93,27 +93,22 @@ export const Table = () => {
     debouncedFilterProducts(newFilter);
   };
 
-  const renderProviders = products.map(
-    (item) => (
-      console.log(item),
-      (
-        <GridCells
-          key={item.id}
-          id={item.id}
-          location1={item.location1}
-          code={item.code}
-          name={item.name}
-          serial={item.serial}
-          unitMeasurement={item.unitMeasurement}
-          stock={item.stock}
-          status={item.status}
-          loadProducts={loadProducts}
-          setLoadProducts={setLoadProducts}
-          projects={projects}
-        />
-      )
-    )
-  );
+  const renderProviders = products.map((item) => (
+    <GridCells
+      key={item.id}
+      id={item.id}
+      location1={item.location1}
+      code={item.code}
+      name={item.name}
+      serial={item.serial}
+      unitMeasurement={item.unitMeasurement}
+      stock={item.stock}
+      status={item.status}
+      loadProducts={loadProducts}
+      setLoadProducts={setLoadProducts}
+      projects={projects}
+    />
+  ));
 
   const pageCount = Math.ceil(pagination.totalItems / pageSize);
 
@@ -131,6 +126,7 @@ export const Table = () => {
         tamanioDePagina={pageSize}
         respStore={respStore}
         urlXlsx={"reports"}
+        importXlsx={true}
         setRespStore={setRespStore}
         isInventory
         dailyReport

@@ -303,6 +303,47 @@ export const GridCells = ({
           </div>
         </ModalForm>
       )}
+      <div key={id} className="md:hidden bg-white rounded-lg w-full p-4 my-2">
+        <div className="flex flex-row justify-between gap-4">
+          <p>Ubicacion:</p>
+          <p className="text-center">{location1}</p>
+        </div>
+        <div className="flex flex-row justify-between gap-4">
+          <p>Codigo:</p>
+          <p className="text-center">{code}</p>
+        </div>
+        <div className="flex flex-row justify-between gap-4">
+          <p>Nombre:</p>
+          <p className="text-center">{name}</p>
+        </div>
+        <div className="flex flex-row justify-between gap-4">
+          <p>Categoria:</p>
+          <p className="text-center">{serial}</p>
+        </div>
+        <div className="flex flex-row justify-between gap-4">
+          <p>Unidad de medida:</p>
+          <p className="text-center">{unitMeasurement}</p>
+        </div>
+        <div className="flex flex-row justify-between gap-4">
+          <p>Acciones:</p>
+          <div className="flex flex-row gap-2 justify-center items-center">
+            <Link
+              to={`agregar/${id}`}
+              className="flex flex-row gap-1 items-center"
+            >
+              <RiPencilLine />
+              <span>Editar</span>
+            </Link>
+            <button
+              className="flex flex-row gap-1 text-danger items-center"
+              onClick={handleDelete}
+            >
+              <RiDeleteBinLine />
+              <span>Eliminar</span>
+            </button>
+          </div>
+        </div>
+      </div>
     </>
   );
 };

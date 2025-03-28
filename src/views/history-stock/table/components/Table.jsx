@@ -14,19 +14,19 @@ import { GridItemsHeader } from "../../../../components/GridItemsHeader";
 
 const paramsOfTable = [
   {
-    name: "ID de registro"
-  },
-  {
-    name: "Project de envio"
+    name: "Id registro"
   },
   {
     name: "Producto"
   },
   {
-    name: "Stock enviado"
+    name: "Codigo"
   },
   {
-    name: "Fecha de envio"
+    name: "Stock recibido"
+  },
+  {
+    name: "Fecha de recibido"
   }
 ];
 
@@ -50,11 +50,11 @@ export const Table = () => {
     setLoading(true);
 
     const resp = await fetchConToken(
-      `products/send-history?page=${pageNumber}&size=${pageSize}&search=${paramFiltro}`
+      `products/history-stock?page=${pageNumber}&size=${pageSize}&search=${paramFiltro}`
     );
     const body = await resp.json();
 
-    setHistoryProductSend(body.sendHistoryFilter);
+    setHistoryProductSend(body.historyFilter);
     setPagination(body.paginationData);
 
     setLoading(false);
@@ -88,8 +88,8 @@ export const Table = () => {
       <GridCells
         key={item.id}
         id={item.id}
-        project={item.project}
-        product={item.product}
+        name={item.name}
+        code={item.code}
         stock={item.stock}
         createdAt={item.createdAt}
         getClient={getClient}

@@ -1,44 +1,47 @@
 import {
-    RiBarChartBoxLine,
-    RiShieldUserLine,
-    RiArticleLine,
-    RiProfileLine,
-    RiGridLine,
-    RiMoneyDollarCircleLine,
-    RiShoppingCart2Line,
-    RiBankCardLine,
-    RiRefund2Line,
-    RiHandCoinLine,
-    RiSettings2Line,
+  RiBarChartBoxLine,
+  RiShieldUserLine,
+  RiArticleLine,
+  RiProfileLine,
+  RiGridLine,
+  RiMoneyDollarCircleLine,
+  RiShoppingCart2Line,
+  RiBankCardLine,
+  RiRefund2Line,
+  RiHandCoinLine,
+  RiSettings2Line,
+  RiMapPinLine,
+  RiQrCodeLine,
+  RiDatabase2Line,
+  RiHistoryLine,
+  RiRulerLine
 } from "react-icons/ri";
 
-function Icono({ icono, size }) {
-  switch (icono) {
-    case "bar-chart-box-line":
-        return <RiBarChartBoxLine size={size} />;
-    case "shield-user-line":
-        return <RiShieldUserLine size={size} />;
-    case "article-line":
-        return <RiArticleLine size={size} />;
-    case "profile-fill":
-        return <RiProfileLine size={size} />;
-    case "grid-line":
-        return <RiGridLine size={size} />;
-    case "money-dollar-circle-line":
-        return <RiMoneyDollarCircleLine size={size} />;
-    case "shopping-cart-2-line":
-        return <RiShoppingCart2Line size={size} />;
-    case "bank-card-line":
-        return <RiBankCardLine size={size} />;
-    case "refund-2-line":
-        return <RiRefund2Line size={size} />;
-    case "credit":
-        return <RiHandCoinLine size={size} />;
-    case "tiendas":
-        return <RiSettings2Line size={size} />;
-    default:
-        return null;
-  }
+// Mapeo de iconos
+const iconMap = {
+  "bar-chart-box-line": RiBarChartBoxLine,
+  "shield-user-line": RiShieldUserLine,
+  "article-line": RiArticleLine,
+  "profile-fill": RiProfileLine,
+  "grid-line": RiGridLine,
+  "money-dollar-circle-line": RiMoneyDollarCircleLine,
+  "shopping-cart-2-line": RiShoppingCart2Line,
+  "bank-card-line": RiBankCardLine,
+  "refund-2-line": RiRefund2Line,
+  credit: RiHandCoinLine,
+  tiendas: RiSettings2Line,
+
+  "map-pin-line": RiMapPinLine, // Ubicaciones
+  "qr-code-line": RiQrCodeLine, // Códigos
+  "database-2-line": RiDatabase2Line, // Serial, Historial Stock
+  "history-line": RiHistoryLine, // Historial envíos
+  "ruler-line": RiRulerLine
+};
+
+function Icono({ icono, size = 24 }) {
+  const IconComponent = iconMap[icono]; // Obtiene el icono del mapeo
+
+  return IconComponent ? <IconComponent size={size} /> : null;
 }
 
 export default Icono;

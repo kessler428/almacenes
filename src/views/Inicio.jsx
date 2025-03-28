@@ -1,5 +1,8 @@
 import { Lucide } from "@/base-components";
 import { useState } from "react";
+import { useEffect } from "react";
+import { fetchConToken } from "@/helpers/fetch";
+import Swal from "sweetalert2";
 
 function Main() {
   const [data] = useState({
@@ -9,6 +12,47 @@ function Main() {
     inversionTotal: 500000,
     gananciasTotales: 750000
   });
+
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    const getInfoIndex = async () => {
+      const resp = await fetchConToken("admin");
+
+      const body = await resp.json();
+
+      setNotifications(body.notification);
+    };
+    getInfoIndex();
+  }, []);
+
+  useEffect(() => {
+    if (notifications?.length > 0) {
+      showAlert(0);
+    }
+  }, [notifications]);
+
+  const showAlert = (index) => {
+    Swal.fire({
+      title: "Notificación",
+      text:
+        "El producto [" +
+        notifications[index].name +
+        "] con codigo [" +
+        notifications[index].code +
+        "] se encuentra en bajo stock",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Ok",
+      cancelButtonText: "Cerrar"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (index < notifications.length - 1) {
+          showAlert(index + 1);
+        }
+      }
+    });
+  };
 
   return (
     <div className="grid grid-cols-12 gap-6">
