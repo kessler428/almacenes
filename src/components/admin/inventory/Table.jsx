@@ -13,16 +13,16 @@ import { useSelector } from "react-redux";
 
 const PRODUCTS_ADMIN_HEADERS = [
   {
-    name: "Ubicación"
-  },
-  {
     name: "Codigo"
   },
   {
-    name: "Nombre"
+    name: "Ubicación"
   },
   {
     name: "Categoria"
+  },
+  {
+    name: "Nombre"
   },
   {
     name: "Unidad de medida"
@@ -104,6 +104,8 @@ export const Table = () => {
       unitMeasurement={item.unitMeasurement}
       stock={item.stock}
       status={item.status}
+      stockMin={item.stockMin}
+      notifyMin={item.notifyMin}
       loadProducts={loadProducts}
       setLoadProducts={setLoadProducts}
       projects={projects}

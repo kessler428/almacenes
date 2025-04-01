@@ -2,7 +2,14 @@ import React from "react";
 import moment from "moment/moment";
 import { Link, useNavigate } from "react-router-dom";
 
-export const GridCells = ({ id, project, product, stock, createdAt }) => {
+export const GridCells = ({
+  id,
+  project,
+  product,
+  stock,
+  createdAt,
+  priceCost
+}) => {
   const navigate = useNavigate();
 
   return (
@@ -11,7 +18,7 @@ export const GridCells = ({ id, project, product, stock, createdAt }) => {
         key={id * Math.random()}
         className="hidden md:block bg-white rounded-lg w-full py-3 pr-2 my-2"
       >
-        <div className="grid grid-cols-5 w-full">
+        <div className="grid grid-cols-6 w-full">
           <div className="grid justify-center items-center">
             <p className="text-center">{id}</p>
           </div>
@@ -24,7 +31,9 @@ export const GridCells = ({ id, project, product, stock, createdAt }) => {
           <div className="grid justify-center items-center">
             <p className="text-center">{stock}</p>
           </div>
-
+          <div className="grid justify-center items-center">
+            <p className="text-center">{priceCost}</p>
+          </div>
           <div className="grid justify-center items-center">
             <p className="text-center">
               {moment(createdAt).format("DD/MM/YYYY")}

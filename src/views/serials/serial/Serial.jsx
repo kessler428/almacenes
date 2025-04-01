@@ -4,7 +4,7 @@ import { Table } from "./components/Table";
 export const Serial = () => {
     return (
         <>
-            <Title title='Serial' />
+            <Title title='Categoria' />
             <Table />
         </>
     );

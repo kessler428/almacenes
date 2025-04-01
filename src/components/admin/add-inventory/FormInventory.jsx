@@ -40,6 +40,10 @@ export const FormInventory = ({ id, esNuevo }) => {
   const [categories, setCategories] = useState([]);
   const [unitMeasurements, setUnitMeasurements] = useState([]);
 
+  // Incliyen Ivas Precio costo y venta
+  const [costIncludeTax, setCostIncludeTax] = useState(false);
+  const [priceIncludeTax, setPriceIncludeTax] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -95,10 +99,10 @@ export const FormInventory = ({ id, esNuevo }) => {
       return {
         ...prev,
         useConsecutive,
-        code: useConsecutive ? `#${lastProductId + 1}` : ""
+        code: useConsecutive ? `${lastProductId + 1}` : ""
       };
     });
-    
+
     setUseConsecutive((prev) => !prev);
   };
 
@@ -243,7 +247,6 @@ export const FormInventory = ({ id, esNuevo }) => {
             value={data.stockMin}
             className="col-span-2 w-full"
             handleInputChange={handleInputChange}
-            disabled={!data.notifyMin}
           />
         )}
       </div>
@@ -253,7 +256,7 @@ export const FormInventory = ({ id, esNuevo }) => {
         <h3 className="text-lg font-semibold mb-2">Información de Costos</h3>
 
         {/* Primera Fila */}
-        <div className="grid grid-cols-1 gap-5 mb-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 mb-4 md:grid-cols-3">
           <Input
             nameLabel="Costo Unitario"
             type="number"
@@ -261,31 +264,55 @@ export const FormInventory = ({ id, esNuevo }) => {
             value={data.costUnit}
             handleInputChange={handleInputChange}
           />
-          <Input
-            nameLabel="Valor Impuesto > Costo"
-            type="number"
-            name="taxValueCostUnit"
-            value={data.taxValueCostUnit}
-            handleInputChange={handleInputChange}
-          />
+          <div className="flex items-center gap-2 mt-7 aling-center">
+            <input
+              type="checkbox"
+              name="withTax"
+              checked={costIncludeTax}
+              onChange={() => setCostIncludeTax((prev) => !prev)}
+              className="w-4 h-4"
+            />
+            <label>Incluye Iva</label>
+          </div>
+          {costIncludeTax && (
+            <Input
+              nameLabel="Valor Impuesto > Costo"
+              type="number"
+              name="taxValueCostUnit"
+              value={data.taxValueCostUnit}
+              handleInputChange={handleInputChange}
+            />
+          )}
         </div>
 
         {/* Segunda Fila */}
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
           <Input
-            nameLabel="Precio Costo Unitario"
+            nameLabel="Precio Venta Unitario"
             type="number"
             name="priceCostUnit"
             value={data.priceCostUnit}
             handleInputChange={handleInputChange}
           />
-          <Input
-            nameLabel="Valor Impuesto > Precio"
-            type="number"
-            name="taxValuePriceCostUnit"
-            value={data.taxValuePriceCostUnit}
-            handleInputChange={handleInputChange}
-          />
+          <div className="flex items-center gap-2 mt-7 aling-center">
+            <input
+              type="checkbox"
+              name="withTax"
+              checked={priceIncludeTax}
+              onChange={() => setPriceIncludeTax((prev) => !prev)}
+              className="w-4 h-4"
+            />
+            <label>Incluye Iva</label>
+          </div>
+          {priceIncludeTax && (
+            <Input
+              nameLabel="Valor Impuesto > Precio ventas"
+              type="number"
+              name="taxValuePriceCostUnit"
+              value={data.taxValuePriceCostUnit}
+              handleInputChange={handleInputChange}
+            />
+          )}
         </div>
       </div>
 

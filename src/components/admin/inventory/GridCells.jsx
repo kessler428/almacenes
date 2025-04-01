@@ -5,7 +5,9 @@ import {
   AiOutlineSend,
   AiOutlineExport,
   AiOutlineImport,
-  AiOutlineDownload
+  AiOutlineDownload,
+  AiFillApi,
+  AiOutlineApi
 } from "react-icons/ai";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { useSelector } from "react-redux";
@@ -27,6 +29,8 @@ export const GridCells = ({
   stock,
   status,
   projects,
+  stockMin,
+  notifyMin,
   loadProducts,
   setLoadProducts
 }) => {
@@ -52,7 +56,7 @@ export const GridCells = ({
       if (result.isConfirmed) {
         const resp = await fetchConToken(`products/${id}`, {}, "DELETE");
         if (resp.status === 200) {
-          Swal.fire("Eliminado", "El producto ha sido eliminado", "success");
+          Swal.fire("Inactivado", "El producto ha sido inactivado", "success");
           setLoadProducts(!loadProducts);
         } else {
           Swal.fire("Error", "No se pudo eliminar el producto", "error");
@@ -98,6 +102,35 @@ export const GridCells = ({
     }
   };
 
+  const handleAvaliableStock = async () => {
+    Swal.fire({
+      title: "¿Estás seguro?",
+      text: "¿Quieres activar el producto?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, activar",
+      cancelButtonText: "Cancelar"
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const resp = await fetchConToken(
+          `products/active/${id}`,
+          {
+            status: "active"
+          },
+          "PATCH"
+        );
+        if (resp.status === 200) {
+          Swal.fire("Activado", "El producto ha sido activado", "success");
+          setLoadProducts(!loadProducts);
+        } else {
+          Swal.fire("Error", "No se pudo activar el producto", "error");
+        }
+      }
+    });
+  };
+
   return (
     <>
       <div
@@ -106,18 +139,24 @@ export const GridCells = ({
       >
         <div className={`grid w-full pl-2 grid-cols-8`}>
           <div className="col-span-7 cursor-pointer">
-            <div className="grid grid-cols-7">
-              <div className="grid justify-center items-center">
-                <p className="text-center truncate">{location1}</p>
-              </div>
+            <div
+              // className="grid grid-cols-7"
+              className={
+                `grid grid-cols-7 ` +
+                (notifyMin && stock < stockMin ? "text-red-600 font-bold" : "")
+              }
+            >
               <div className="grid justify-center items-center">
                 <p className="text-center truncate">{code}</p>
               </div>
               <div className="grid justify-center items-center">
-                <p className="text-center truncate">{name}</p>
+                <p className="text-center truncate">{location1}</p>
               </div>
               <div className="grid justify-center items-center">
                 <p className="text-center truncate">{serial}</p>
+              </div>
+              <div className="grid justify-center items-center">
+                <p className="text-center truncate">{name}</p>
               </div>
               <div className="grid justify-center items-center">
                 <p className="text-center truncate">{unitMeasurement}</p>
@@ -133,87 +172,111 @@ export const GridCells = ({
             </div>
           </div>
           <div className="flex flex-row gap-2 justify-center items-center">
-            <Tooltip.Provider>
-              {/* Botón de Exportar */}
-              <Tooltip.Root>
-                <Tooltip.Trigger asChild>
-                  <button
-                    onClick={() => setModalForm(true)}
-                    className="flex flex-row gap-1 items-center bg-principal text-white p-2 rounded-md"
-                  >
-                    <AiOutlineExport size={15} />
-                  </button>
-                </Tooltip.Trigger>
-                <Tooltip.Portal>
-                  <Tooltip.Content
-                    side="top"
-                    className="bg-black text-white px-2 py-1 text-xs rounded-md"
-                  >
-                    Salidas de productos
-                  </Tooltip.Content>
-                </Tooltip.Portal>
-              </Tooltip.Root>
+            {status === "active" ? (
+              <Tooltip.Provider>
+                {/* Botón de Exportar */}
+                <Tooltip.Root>
+                  <Tooltip.Trigger asChild>
+                    <button
+                      onClick={() => setModalForm(true)}
+                      className="flex flex-row gap-1 items-center bg-blue-500 text-white p-2 rounded-md"
+                    >
+                      <AiOutlineExport size={15} />
+                    </button>
+                  </Tooltip.Trigger>
+                  <Tooltip.Portal>
+                    <Tooltip.Content
+                      side="top"
+                      className="bg-black text-white px-2 py-1 text-xs rounded-md"
+                    >
+                      Salidas de productos
+                    </Tooltip.Content>
+                  </Tooltip.Portal>
+                </Tooltip.Root>
 
-              {/* Botón de Editar */}
-              <Tooltip.Root>
-                <Tooltip.Trigger asChild>
-                  <Link
-                    to={`agregar/${id}`}
-                    className="flex flex-row gap-1 items-center bg-green-600 text-white p-2 rounded-md"
-                  >
-                    <RiPencilLine />
-                  </Link>
-                </Tooltip.Trigger>
-                <Tooltip.Portal>
-                  <Tooltip.Content
-                    side="top"
-                    className="bg-black text-white px-2 py-1 text-xs rounded-md"
-                  >
-                    Editar producto
-                  </Tooltip.Content>
-                </Tooltip.Portal>
-              </Tooltip.Root>
+                {/* Botón de Añadir Stock */}
+                <Tooltip.Root>
+                  <Tooltip.Trigger asChild>
+                    <button
+                      onClick={() => setStockToAdd(true)}
+                      className="flex flex-row gap-1 items-center bg-green-500 text-white p-2 rounded-md"
+                    >
+                      <AiOutlineDownload size={15} />
+                    </button>
+                  </Tooltip.Trigger>
+                  <Tooltip.Portal>
+                    <Tooltip.Content
+                      side="top"
+                      className="bg-black text-white px-2 py-1 text-xs rounded-md"
+                    >
+                      Añadir stock
+                    </Tooltip.Content>
+                  </Tooltip.Portal>
+                </Tooltip.Root>
 
-              {/* Botón de Eliminar */}
-              <Tooltip.Root>
-                <Tooltip.Trigger asChild>
-                  <button
-                    onClick={handleDelete}
-                    className="flex flex-row gap-1 items-center bg-danger text-white p-2 rounded-md"
-                  >
-                    <RiDeleteBinLine />
-                  </button>
-                </Tooltip.Trigger>
-                <Tooltip.Portal>
-                  <Tooltip.Content
-                    side="top"
-                    className="bg-black text-white px-2 py-1 text-xs rounded-md"
-                  >
-                    Eliminar producto
-                  </Tooltip.Content>
-                </Tooltip.Portal>
-              </Tooltip.Root>
+                {/* Botón de Editar Producto */}
+                <Tooltip.Root>
+                  <Tooltip.Trigger asChild>
+                    <Link
+                      to={`agregar/${id}`}
+                      className="flex flex-row gap-1 items-center bg-yellow-500 text-white p-2 rounded-md"
+                    >
+                      <RiPencilLine />
+                    </Link>
+                  </Tooltip.Trigger>
+                  <Tooltip.Portal>
+                    <Tooltip.Content
+                      side="top"
+                      className="bg-black text-white px-2 py-1 text-xs rounded-md"
+                    >
+                      Editar producto
+                    </Tooltip.Content>
+                  </Tooltip.Portal>
+                </Tooltip.Root>
 
-              {/* Botón de Añadir Stock */}
-              <Tooltip.Root>
-                <Tooltip.Trigger asChild>
-                  <button
-                    onClick={() => setStockToAdd(true)}
-                    className="flex flex-row gap-1 items-center bg-principal text-white p-2 rounded-md"
-                  >
-                    <AiOutlineDownload size={15} />
-                  </button>
-                </Tooltip.Trigger>
-                <Tooltip.Portal>
-                  <Tooltip.Content
-                    side="top"
-                    className="bg-black text-white px-2 py-1 text-xs rounded-md"
-                  >
-                    Añadir stock
-                  </Tooltip.Content>
-                </Tooltip.Portal>
-              </Tooltip.Root>
-            </Tooltip.Provider>
+                {/* Botón de Eliminar/Inactivar Producto */}
+                <Tooltip.Root>
+                  <Tooltip.Trigger asChild>
+                    <button
+                      onClick={handleDelete}
+                      className="flex flex-row gap-1 items-center bg-red-500 text-white p-2 rounded-md"
+                    >
+                      <RiDeleteBinLine />
+                    </button>
+                  </Tooltip.Trigger>
+                  <Tooltip.Portal>
+                    <Tooltip.Content
+                      side="top"
+                      className="bg-black text-white px-2 py-1 text-xs rounded-md"
+                    >
+                      Inactivar producto
+                    </Tooltip.Content>
+                  </Tooltip.Portal>
+                </Tooltip.Root>
+              </Tooltip.Provider>
+            ) : (
+              <Tooltip.Provider>
+                <Tooltip.Root>
+                  <Tooltip.Trigger asChild>
+                    <button
+                      onClick={() => handleAvaliableStock(true)}
+                      className="flex flex-row gap-1 items-center bg-principal text-white p-2 rounded-md"
+                    >
+                      {/* Activar producto */}
+                      <AiFillApi size={15} />
+                    </button>
+                  </Tooltip.Trigger>
+                  <Tooltip.Portal>
+                    <Tooltip.Content
+                      side="top"
+                      className="bg-black text-white px-2 py-1 text-xs rounded-md"
+                    >
+                      Activar producto
+                    </Tooltip.Content>
+                  </Tooltip.Portal>
+                </Tooltip.Root>
+              </Tooltip.Provider>
+            )}
           </div>
         </div>
       </div>
@@ -303,26 +366,28 @@ export const GridCells = ({
           </div>
         </ModalForm>
       )}
-      <div key={id} className="md:hidden bg-white rounded-lg w-full p-4 my-2">
-        <div className="flex flex-row justify-between gap-4">
-          <p>Ubicacion:</p>
-          <p className="text-center">{location1}</p>
-        </div>
-        <div className="flex flex-row justify-between gap-4">
-          <p>Codigo:</p>
-          <p className="text-center">{code}</p>
-        </div>
-        <div className="flex flex-row justify-between gap-4">
-          <p>Nombre:</p>
-          <p className="text-center">{name}</p>
-        </div>
-        <div className="flex flex-row justify-between gap-4">
-          <p>Categoria:</p>
-          <p className="text-center">{serial}</p>
-        </div>
-        <div className="flex flex-row justify-between gap-4">
-          <p>Unidad de medida:</p>
-          <p className="text-center">{unitMeasurement}</p>
+      <div key={id} className={`md:hidden bg-white rounded-lg w-full p-4 my-2`}>
+        <div className={stock < stockMin ? "text-red-600 font-bold" : ""}>
+          <div className="flex flex-row justify-between gap-4">
+            <p>Codigo:</p>
+            <p className="text-center">{code}</p>
+          </div>
+          <div className="flex flex-row justify-between gap-4">
+            <p>Ubicacion:</p>
+            <p className="text-center">{location1}</p>
+          </div>
+          <div className="flex flex-row justify-between gap-4">
+            <p>Categoria:</p>
+            <p className="text-center">{serial}</p>
+          </div>
+          <div className="flex flex-row justify-between gap-4">
+            <p>Nombre:</p>
+            <p className="text-center">{name}</p>
+          </div>
+          <div className="flex flex-row justify-between gap-4">
+            <p>Unidad de medida:</p>
+            <p className="text-center">{unitMeasurement}</p>
+          </div>
         </div>
         <div className="flex flex-row justify-between gap-4">
           <p>Acciones:</p>

@@ -58,16 +58,19 @@ export const ImportExcelModal = ({ isOpen, onClose, refreshProducts }) => {
   const handleDownloadTemplate = () => {
     const ws = XLSX.utils.json_to_sheet([
       {
-        Ubicacion: "",
         Codigo: "",
-        Nombre: "",
+        Ubicacion: "",
         Categoria: "",
+        Nombre: "",
         "Unidad de medida": "",
         Stock: "",
         "Stock mínimo": "",
+        "Notificación mínima": "",
         "Costo unitario": "",
+        "Costo incluye IVA": "",
         "Costo IVA": "",
-        "Precio de venta": "",
+        "Precio venta unitario": "",
+        "Precio incluye IVA": "",
         "Precio IVA": "",
         Estado: "activo/inactivo"
       }

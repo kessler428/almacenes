@@ -17,7 +17,7 @@ const paramsOfTable = [
     name: "Identificador",
   },
   {
-    name: "Ubicación",
+    name: "Nombre",
   },
   {
     name: "Estado",

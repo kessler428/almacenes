@@ -35,7 +35,7 @@ export const Header = ({
     const url = window.URL.createObjectURL(new Blob([blob]));
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `Productos.xlsx`);
+    link.setAttribute("download", `${urlXlsx}.xlsx`); // Nombre del archivo
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -84,7 +84,7 @@ export const Header = ({
           </Link>
         )}
       </div>
-      {totalAfiliados > 0 && (
+      {/* {totalAfiliados > 0 && (
         <div className="text-center md:text-right">
           <p className="font-bold mt-4 md:mt-0">
             Mostrando {numeroDePagina + 1} de{" "}
@@ -94,7 +94,7 @@ export const Header = ({
             de {totalAfiliados}
           </p>
         </div>
-      )}
+      )} */}
       <div className="flex flex-col md:flex-row gap-4 items-center">
         {Access.store === null && showFilter && (
           <Filtros

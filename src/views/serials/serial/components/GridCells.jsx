@@ -25,7 +25,7 @@ export const GridCells = ({ id, name, status, getClient, setGetClient }) => {
         if (resp.status === 200) {
           Swal.fire(
             "Éxito",
-            status === 1 ? "Serial desactivado" : "Serial activado",
+            status === 1 ? "Categoria desactivado" : "Categoria activado",
             "success"
           );
           setGetClient(!getClient);

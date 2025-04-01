@@ -17,16 +17,19 @@ const paramsOfTable = [
     name: "ID de registro"
   },
   {
-    name: "Project de envio"
+    name: "Proyecto"
   },
   {
     name: "Producto"
   },
   {
-    name: "Stock enviado"
+    name: "Stock"
   },
   {
-    name: "Fecha de envio"
+    name: "Costo"
+  },
+  {
+    name: "Fecha"
   }
 ];
 
@@ -91,6 +94,7 @@ export const Table = () => {
         project={item.project}
         product={item.product}
         stock={item.stock}
+        priceCost={item.priceCost}
         createdAt={item.createdAt}
         getClient={getClient}
         setGetClient={setGetClient}
@@ -107,7 +111,7 @@ export const Table = () => {
   return (
     <>
       <Header
-        nombre="+ Nueva Ubicación"
+        nombre=""
         filtro={filtro}
         setFiltro={manejarFiltro}
         pagination={pagination}
@@ -116,6 +120,7 @@ export const Table = () => {
         totalAfiliados={pagination.totalItems}
         numeroDePagina={pageNumber}
         tamanioDePagina={pageSize}
+        urlXlsx={"reports/send-history"}
       />
       {loading ? (
         <SpinnerLoading />
@@ -126,7 +131,7 @@ export const Table = () => {
               <div className="py-4 w-full">
                 <GridItemsHeader
                   params={paramsOfTable}
-                  styleTable="grid-cols-5"
+                  styleTable="grid-cols-6"
                 />
                 {displayStage}
               </div>

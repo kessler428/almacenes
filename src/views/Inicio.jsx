@@ -26,11 +26,11 @@ function Main() {
     getInfoIndex();
   }, []);
 
-  useEffect(() => {
-    if (notifications?.length > 0) {
-      showAlert(0);
-    }
-  }, [notifications]);
+  // useEffect(() => {
+  //   if (notifications?.length > 0) {
+  //     showAlert(0);
+  //   }
+  // }, [notifications]);
 
   const showAlert = (index) => {
     Swal.fire({
@@ -64,25 +64,31 @@ function Main() {
           <InfoCard
             icon="ShoppingCart"
             value={data.transaccionesDiarias}
-            label="Transacciones realizadas hoy"
+            label="Historial de entradas al dia de hoy"
             color="text-primary"
           />
           <InfoCard
             icon="Monitor"
             value={data.totalProductos}
-            label="Cantidad total de productos"
+            label="Historial de salidas al dia de hoy"
             color="text-warning"
           />
           <InfoCard
             icon="TrendingUp"
             value={`C$${data.gananciasTotales.toLocaleString("es-NI")}`}
-            label="Ganancias totales"
+            label="Costo total de productos"
             color="text-success"
           />
           <InfoCard
             icon="TrendingDown"
             value={`C$${data.inversionTotal.toLocaleString("es-NI")}`}
-            label="Inversión total"
+            label="Precio venta de productos"
+            color="text-danger"
+          />
+          <InfoCard
+            icon="TrendingDown"
+            value={`C$${data.inversionTotal.toLocaleString("es-NI")}`}
+            label="Utilidad totales"
             color="text-danger"
           />
         </div>

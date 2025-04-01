@@ -23,10 +23,10 @@ const paramsOfTable = [
     name: "Codigo"
   },
   {
-    name: "Stock recibido"
+    name: "Stock"
   },
   {
-    name: "Fecha de recibido"
+    name: "Fecha"
   }
 ];
 
@@ -116,6 +116,7 @@ export const Table = () => {
         totalAfiliados={pagination.totalItems}
         numeroDePagina={pageNumber}
         tamanioDePagina={pageSize}
+        urlXlsx={`reports/stock-history`}
       />
       {loading ? (
         <SpinnerLoading />
