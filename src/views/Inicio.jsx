@@ -1,7 +1,7 @@
 import { Lucide } from "@/base-components";
 import { useState } from "react";
 import { useEffect } from "react";
-import { fetchConToken } from "@/helpers/fetch";
+import { fetchConToken, fetchSinToken } from "@/helpers/fetch";
 import Swal from "sweetalert2";
 
 function Main() {
