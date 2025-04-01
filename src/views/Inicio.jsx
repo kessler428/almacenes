@@ -3,6 +3,15 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { fetchConToken, fetchSinToken } from "@/helpers/fetch";
 import Swal from "sweetalert2";
+import { SpinnerLoading } from "../components/SpinnerLoading";
+
+const initState = {
+  transaccionesDiarias: 0,
+  dineroEnCaja: 0,
+  totalProductos: 0,
+  inversionTotal: 0,
+  gananciasTotales: 0
+};
 
 function Main() {
   const [data] = useState({
@@ -14,23 +23,35 @@ function Main() {
   });
 
   const [notifications, setNotifications] = useState([]);
+  const [getAdmin, setGetAdmin] = useState(initState);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const getInfoIndex = async () => {
+      setLoading(true);
       const resp = await fetchConToken("admin");
 
       const body = await resp.json();
 
       setNotifications(body.notification);
+      setGetAdmin({
+        stockInput: body.stockInput,
+        stockOutput: body.stockOutput,
+        totalCost: body.totalCost,
+        totalProfit: body.totalProfit,
+        totalSale: body.totalSale
+      });
+
+      setLoading(false);
     };
     getInfoIndex();
   }, []);
 
-  // useEffect(() => {
-  //   if (notifications?.length > 0) {
-  //     showAlert(0);
-  //   }
-  // }, [notifications]);
+  useEffect(() => {
+    if (notifications?.length > 0) {
+      showAlert(0);
+    }
+  }, [notifications]);
 
   const showAlert = (index) => {
     Swal.fire({
@@ -54,7 +75,9 @@ function Main() {
     });
   };
 
-  return (
+  return loading ? (
+    <SpinnerLoading />
+  ) : (
     <div className="grid grid-cols-12 gap-6">
       <div className="col-span-12 mt-8">
         <h2 className="text-xl font-medium truncate mr-5 first-letter:uppercase">
@@ -63,31 +86,31 @@ function Main() {
         <div className="grid grid-cols-12 gap-6 mt-5">
           <InfoCard
             icon="ShoppingCart"
-            value={data.transaccionesDiarias}
+            value={getAdmin.stockInput}
             label="Historial de entradas al dia de hoy"
             color="text-primary"
           />
           <InfoCard
-            icon="Monitor"
-            value={data.totalProductos}
+            icon="ShoppingCart"
+            value={getAdmin.stockOutput}
             label="Historial de salidas al dia de hoy"
             color="text-warning"
           />
           <InfoCard
-            icon="TrendingUp"
-            value={`C$${data.gananciasTotales.toLocaleString("es-NI")}`}
+            icon="DollarSign"
+            value={getAdmin.totalCost}
             label="Costo total de productos"
             color="text-success"
           />
           <InfoCard
-            icon="TrendingDown"
-            value={`C$${data.inversionTotal.toLocaleString("es-NI")}`}
+            icon="DollarSign"
+            value={getAdmin.totalSale}
             label="Precio venta de productos"
             color="text-danger"
           />
           <InfoCard
-            icon="TrendingDown"
-            value={`C$${data.inversionTotal.toLocaleString("es-NI")}`}
+            icon="DollarSign"
+            value={getAdmin.totalProfit}
             label="Utilidad totales"
             color="text-danger"
           />
